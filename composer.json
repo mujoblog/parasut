@@ -1,5 +1,5 @@
 {
-    "name": "mayoz/parasut",
+    "name": "mujoblog/parasut",
     "type": "library",
     "description": "An easy-to-use Parasut's API with PHP.",
     "keywords": [
@@ -7,7 +7,7 @@
         "parasut",
         "invoice"
     ],
-    "homepage": "https://github.com/mayoz/parasut",
+    "homepage": "https://github.com/mujoblog/parasut",
     "license": "MIT",
     "authors": [
         {
