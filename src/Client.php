@@ -118,9 +118,9 @@ class Client
 	 */
 	public function authorize()
 	{
-		$response = $this->send('POST', self::API_TOKEN_URL, false, array_only($this->config, [
-			'client_id', 'client_secret', 'redirect_uri', 'username', 'password', 'grant_type'
-		]));
+		$url = self::API_TOKEN_URL . $this->BuildQueryStringText(array_only($this->config, ['client_id', 'redirect_uri', 'username', 'password', 'grant_type']);
+		
+		$response = $this->send('POST', $url, false);
 
 		if ($token = array_get($response, 'access_token')) {
 			$this->setAccessToken($token);
@@ -212,7 +212,7 @@ class Client
 	 */
 	public function me()
 	{
-		return $this->send('GET', $this->endpointUrl('me', false), true, null);
+		return $this->send('GET', $this->endpointUrl('me', false), true);
 	}
 
 	/**
