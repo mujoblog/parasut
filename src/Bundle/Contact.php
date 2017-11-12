@@ -32,7 +32,7 @@ class Contact extends Bundle
 	 */	
 	public function get($page = 1, $limit = 25, $sort = '', $filterName = '', $filterCode = '', $include = '')
     {
-		$qsData = $this->makeListQueryStringArray($page, $limit, $sort, $filterName, $filterCode)
+		$qsData = $this->makeListQueryStringArray($page, $limit, $sort, $filterName, $filterCode);
 		return $this->client->call('GET', "contacts", "contacts", [], [], $qsData, $this->makeIncludes($include));
     }
 
