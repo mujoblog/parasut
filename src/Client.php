@@ -270,7 +270,7 @@ class Client
 	public function buildQueryStringText( $querystringArray = [] )
 	{
 		if( is_array($querystringArray) && count($querystringArray) > 0 )
-			return '?' . http_build_query($querystringArray)
+			return '?' . http_build_query($querystringArray);
 		
 		return '';
 	}
