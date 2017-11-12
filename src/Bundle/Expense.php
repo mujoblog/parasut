@@ -33,8 +33,10 @@ class Expense extends Bundle
     public function get($page = 1, $limit = 25)
     {
         return $this->client->call("expenses", [
-            'page' => $page,
-            'per_page' => $limit
+            'page'	=> [
+				'number' => $page,
+				'size' 	=> $limit
+			]
         ], 'GET');
     }
 

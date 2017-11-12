@@ -30,12 +30,10 @@ class Product extends Bundle
      * @param  int  $limit
      * @return array
      */
-    public function get($page = 1, $limit = 25)
+    public function get($page = 1, $limit = 25, $sort = '', $filterName = '', $filterCode = '', $include = '')
     {
-        return $this->client->call("products", [
-            'page' => $page,
-            'per_page' => $limit
-        ], 'GET');
+		$qsData = $this->makeListQueryStringArray($page, $limit, $sort, $filterName, $filterCode)
+		return $this->client->call('GET', "products", "products", [], [], $qsData, $this->makeIncludes($include));
     }
 
     /**
@@ -43,13 +41,11 @@ class Product extends Bundle
      *
      * @param  array  $params
      * @return array
-     */
-    public function create(array $params)
-    {
-        return $this->client->call("products", [
-            'product' => $params
-        ], 'POST');
-    }
+     */	
+	public function create($attributes, $relationships = [], $include = '')
+	{
+		return $this->client->call('POST', 'products', 'products', $attributes, $relationships, $this->makeIncludes($include));
+	}
 
     /**
      * Retrieve a product informations via its own id.
@@ -57,9 +53,9 @@ class Product extends Bundle
      * @param  int   $id
      * @return array
      */
-    public function find($id)
+	public function show($id, $include = '')
     {
-        return $this->client->call("products/{$id}", null, 'GET');
+        return $this->client->call('GET', "products/{$id}", "products", [], [], $this->makeIncludes($include), $id);
     }
 
     /**
@@ -69,11 +65,9 @@ class Product extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function update($id, array $params)
+	public function update($id, $attributes, $relationships = [], $include = '')
     {
-        return $this->client->call("products/{$id}", [
-            'product' => $params
-        ], 'PUT');
+        return $this->client->call('PUT', "products/{$id}", "products", $attributes, $relationships, $this->makeIncludes($include), $id );
     }
 
     /**
@@ -82,8 +76,8 @@ class Product extends Bundle
      * @param  int    $id
      * @return array
      */
-    public function delete($id)
+	public function delete($id)
     {
-        return $this->client->call("products/{$id}", null, 'DELETE');
+        return $this->client->call('DELETE', "products/{$id}");
     }
 }

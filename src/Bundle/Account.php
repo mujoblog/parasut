@@ -33,8 +33,10 @@ class Account extends Bundle
     public function get($page = 1, $limit = 25)
     {
         return $this->client->call("accounts", [
-            'page' => $page,
-            'per_page' => $limit
+            'page'	=> [
+				'number' => $page,
+				'size' 	=> $limit
+			]
         ], 'GET');
     }
 

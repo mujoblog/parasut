@@ -28,16 +28,12 @@ class Sale extends Bundle
      *
      * @param  int  $page
      * @param  int  $limit
-     * @param  string|null  $lastSynch
      * @return array
-     */
-    public function get($page = 1, $limit = 25, $lastSynch = null)
+     */	
+	public function get($page = 1, $limit = 25, $sort = '', $filterName = '', $filterCode = '', $include = '')
     {
-        return $this->client->call("sales_invoices", [
-            'page' => $page,
-            'per_page' => $limit,
-            'last_synch' => $lastSynch,
-        ], 'GET');
+		$qsData = $this->makeListQueryStringArray($page, $limit, $sort, $filterName, $filterCode)
+		return $this->client->call('GET', "sales_invoices", "sales_invoices", [], [], $qsData, $this->makeIncludes($include));
     }
 
     /**
@@ -46,12 +42,10 @@ class Sale extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function create(array $params)
-    {
-        return $this->client->call("sales_invoices", [
-            'sales_invoice' => $params,
-        ], 'POST');
-    }
+	public function create($attributes, $relationships = [], $include = '')
+	{
+		return $this->client->call('POST', 'sales_invoices', 'sales_invoices', $attributes, $relationships, $this->makeIncludes($include));
+	}
 
     /**
      * Retrieve a sales invoice informations via its own id.
@@ -59,9 +53,9 @@ class Sale extends Bundle
      * @param  int   $id
      * @return array
      */
-    public function find($id)
+    public function show($id, $include = '')
     {
-        return $this->client->call("sales_invoices/{$id}", null, 'GET');
+        return $this->client->call('GET', "sales_invoices/{$id}", "sales_invoices", [], [], $this->makeIncludes($include), $id);
     }
 
     /**
@@ -71,11 +65,9 @@ class Sale extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function update($id, array $params)
+    public function update($id, $attributes, $relationships = [], $include = '')
     {
-        return $this->client->call("sales_invoices/{$id}", [
-            'sales_invoice' => $params,
-        ], 'PUT');
+        return $this->client->call('PUT', "sales_invoices/{$id}", "sales_invoices", $attributes, $relationships, $this->makeIncludes($include), $id );
     }
 
     /**
@@ -85,11 +77,21 @@ class Sale extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function paid($id, array $params)
+    public function pay($id, $attributes, $include = '')
     {
-        return $this->client->call("sales_invoices/{$id}/payments", [
-            'payment' => $params,
-        ], 'POST');
+        return $this->client->call('POST', "sales_invoices/{$id}/payments", "payments", $attributes, [], $this->makeIncludes($include));
+    }
+	
+	/**
+     * Marked paid the sales invoice with given arguments.
+     *
+     * @param  int    $id
+     * @param  array  $params
+     * @return array
+     */
+    public function cancel($invoiceId, $attributes, $include = '')
+    {
+        return $this->client->call('DELETE', "sales_invoices/{$invoiceId}/cancel", '', [], [], $this->makeIncludes($include));
     }
 
     /**
@@ -98,9 +100,9 @@ class Sale extends Bundle
      * @param  int  $id
      * @return array
      */
-    public function convertInvoice($id)
+    public function convertInvoice($invoiceId, $attributes = [], $relationships = [], $include = '')
     {
-        return $this->client->call("sales_invoices/{$id}/convert_to_invoice", null, 'POST');
+        return $this->client->call('PATCH', "sales_invoices/{$invoiceId}/convert_to_invoice", 'sales_invoices', $attributes, $relationships, $this->makeIncludes($include), $invoiceId);
     }
 
     /**
@@ -111,82 +113,39 @@ class Sale extends Bundle
      */
     public function delete($id)
     {
-        return $this->client->call("sales_invoices/{$id}", null, 'DELETE');
+        return $this->client->call('DELETE', "sales_invoices/{$id}");
     }
 
-    /**
-     * Retrieve the trashed sales invoices ids.
+     /**
+     * Convert estimate to invoice.
      *
-     * @param  string  $timestamp
+     * @param  int  $id
      * @return array
      */
-    public function trashed($timestamp)
+    public function recover($invoiceId, $attributes = [], $relationships = [], $include = '')
     {
-        return $this->client->call("sales_invoices/deleted_objects", array_filter([
-            'last_synch' => $timestamp,
-        ]), 'GET');
+        return $this->client->call('PATCH', "sales_invoices/{$invoiceId}/recover", 'sales_invoices', $attributes, $relationships, $this->makeIncludes($include), $invoiceId);
     }
-
-    /**
-     * Create a new e-invoice record.
-     *
-     * @param  int    $id
-     * @param  array  $params
-     * @return array
-    */
-    public function createEInvoice($id, array $params)
-    {
-        return $this->client->call("sales_invoices/{$id}/e_invoice", [
-            'e_invoice' => $params,
-        ], 'POST');
-    }
-
-    /**
-     * Create a new e-archive record.
-     *
-     * @param  int    $id
-     * @param  array  $params
-     * @return array
-    */
-    public function createEArchive($id, array $params)
-    {
-        return $this->client->call("sales_invoices/{$id}/e_archive", [
-            'e_archive' => $params,
-        ], 'POST');
-    }
-    
-    /**
-     * Retrieve the e-invoice's document type.
+	
+	/**
+     * Convert estimate to invoice.
      *
      * @param  int  $id
      * @return array
-    */
-    public function getEInvoiceType($id)
+     */
+    public function archive($invoiceId, $attributes = [], $relationships = [], $include = '')
     {
-        return $this->client->call("sales_invoices/{$id}/e_document_type", null, 'GET');
+        return $this->client->call('PATCH', "sales_invoices/{$invoiceId}/archive", 'sales_invoices', $attributes, $relationships, $this->makeIncludes($include), $invoiceId);
     }
-
-    /**
-     * Retrieve the invoice's document status.
+	
+	/**
+     * Convert estimate to invoice.
      *
      * @param  int  $id
      * @return array
-    */
-    public function getEInvoiceStatus($id)
+     */
+    public function unarchive($invoiceId, $attributes = [], $relationships = [], $include = '')
     {
-        return $this->client->call("sales_invoices/{$id}/e_document_status", null, 'GET');
-    }
-    
-    /**
-     * Retrieve the e-invoice's inbox details.
-     *
-     * @param  string  $vatId
-     * @return array
-    */
-    public function getEInvoiceInboxes($taxNumber)
-    {
-        return $this->client->call("e_invoice_inboxes",[
-            'vkn' => $taxNumber,
-        ], 'GET');
+        return $this->client->call('PATCH', "sales_invoices/{$invoiceId}/unarchive", 'sales_invoices', $attributes, $relationships, $this->makeIncludes($include), $invoiceId);
     }
 }

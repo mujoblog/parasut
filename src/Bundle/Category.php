@@ -33,8 +33,10 @@ class Category extends Bundle
     public function get($page = 1, $limit = 25)
     {
         return $this->client->call("item_categories", [
-            'page' => $page,
-            'per_page' => $limit
+            'page'	=> [
+				'number' => $page,
+				'size' 	=> $limit
+			]
         ], 'GET');
     }
 
