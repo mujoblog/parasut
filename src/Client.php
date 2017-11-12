@@ -287,6 +287,7 @@ class Client
 	{
 		$headers   = [
             "cache-control: no-cache",
+            "content-type: application/json",
             "Accept: application/json"
         ];
 
@@ -302,10 +303,8 @@ class Client
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		
-		if( in_array($method, ["PUT", "POST", "PATCH"]) ) {
-		    $headers[] = "content-type: application/json";
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["data" => $dataArray], JSON_FORCE_OBJECT));
-        }
+		if( in_array($method, ["PUT", "POST", "PATCH"]) ) 
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["data" => $dataArray], JSON_FORCE_OBJECT));
 		
 		switch ($method) {
 			case 'PUT':
