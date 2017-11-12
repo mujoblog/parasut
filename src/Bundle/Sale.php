@@ -89,7 +89,7 @@ class Sale extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function cancel($invoiceId, $attributes, $include = '')
+    public function cancel($invoiceId, $include = '')
     {
         return $this->client->call('DELETE', "sales_invoices/{$invoiceId}/cancel", '', [], [], $this->makeIncludes($include));
     }
