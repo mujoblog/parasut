@@ -118,7 +118,7 @@ class Client
 	 */
 	public function authorize()
 	{
-		$url = self::API_TOKEN_URL . $this->BuildQueryStringText(array_only($this->config, ['client_id', 'redirect_uri', 'username', 'password', 'grant_type']);
+		$url = self::API_TOKEN_URL . $this->BuildQueryStringText(array_only($this->config, ['client_id', 'redirect_uri', 'username', 'password', 'grant_type']));
 		
 		$response = $this->send('POST', $url, false);
 
