@@ -285,13 +285,13 @@ class Client
 	 */
 	public function send($method, $url, $auth = false, $dataArray = [])
 	{
-		$headers   = [];
-		$headers[] = 'Accept: application/json';
+		$headers   = [
+            "cache-control: no-cache",
+            "Accept: application/json"
+        ];
 
-		if ($auth) {
+		if ($auth)
 			$headers[] = 'Authorization: Bearer ' . $this->getAccessToken();
-			$params['access_token'] = $this->getAccessToken();
-		}
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -301,18 +301,21 @@ class Client
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_HEADER, false);
+		
+		if( in_array($method, ["PUT", "POST", "PATCH"]) ) {
+		    $headers[] = "content-type: application/json";
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["data" => $dataArray], JSON_FORCE_OBJECT));
+        }
+		
 		switch ($method) {
 			case 'PUT':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray, JSON_FORCE_OBJECT)]));
 				break;
 			case 'POST':
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray, JSON_FORCE_OBJECT)]));
 				break;
             case 'PATCH':
                 curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray, JSON_FORCE_OBJECT)]));
                 break;
 			case 'DELETE':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
