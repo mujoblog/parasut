@@ -32,7 +32,6 @@ abstract class Bundle
      * Constructor.
      *
      * @param  Client  $client
-     * @return void
      */
     public function __construct(Client $client)
     {

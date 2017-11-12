@@ -80,7 +80,6 @@ class Client
 	 * Constructor.
 	 *
 	 * @param  array  $config
-	 * @return void
 	 */
 	public function __construct(array $config)
 	{
@@ -278,13 +277,13 @@ class Client
 	/**
 	 * Create a new request.
 	 *
+     * @param  string  $method
 	 * @param  string  $url
 	 * @param  bool	   $auth
-	 * @param  array   $params
-	 * @param  string  $method
+	 * @param  array   $dataArray
 	 * @return mixed
 	 */
-	public function send($method, $url, $auth = false, array $dataArray = [])
+	public function send($method, $url, $auth = false, $dataArray = [])
 	{
 		$headers   = [];
 		$headers[] = 'Accept: application/json';
@@ -308,7 +307,7 @@ class Client
 				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray)]));
 				break;
 			case 'POST':
-				curl_setopt($ch, CURLOPT_POST, count($params));
+				curl_setopt($ch, CURLOPT_POST, 1);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray)]));
 				break;
 			case 'DELETE':
