@@ -304,12 +304,16 @@ class Client
 		switch ($method) {
 			case 'PUT':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray)]));
+				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray, JSON_FORCE_OBJECT)]));
 				break;
 			case 'POST':
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray)]));
+				curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray, JSON_FORCE_OBJECT)]));
 				break;
+            case 'PATCH':
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(["data" => json_encode($dataArray, JSON_FORCE_OBJECT)]));
+                break;
 			case 'DELETE':
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 				break;
