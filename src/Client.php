@@ -304,7 +304,7 @@ class Client
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		
 		if( in_array($method, ["PUT", "POST", "PATCH"]) ) 
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["data" => $dataArray], JSON_FORCE_OBJECT));
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["data" => $dataArray]));
 		
 		switch ($method) {
 			case 'PUT':
