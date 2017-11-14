@@ -30,14 +30,10 @@ class Category extends Bundle
      * @param  int  $limit
      * @return array
      */
-    public function get($page = 1, $limit = 25)
+	public function get($page = 1, $limit = 25, $sort = '', $filters = [], $include = '')
     {
-        return $this->client->call("item_categories", [
-            'page'	=> [
-				'number' => $page,
-				'size' 	=> $limit
-			]
-        ], 'GET');
+		$qsData = $this->makeListQueryStringArray($page, $limit, $sort, $filters);
+		return $this->client->call('GET', "item_categories", "item_categories", [], [], $qsData, $this->makeIncludes($include));
     }
 
     /**
@@ -46,12 +42,10 @@ class Category extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function create(array $params)
-    {
-        return $this->client->call("item_categories", [
-            'item_category' => $params
-        ], 'POST');
-    }
+	public function create($attributes, $relationships = [], $include = '')
+	{
+		return $this->client->call('POST', 'item_categories', 'item_categories', $attributes, $relationships, $this->makeIncludes($include));
+	}
 
     /**
      * Retrieve a category informations via its own id.
@@ -59,9 +53,9 @@ class Category extends Bundle
      * @param  int   $id
      * @return array
      */
-    public function find($id)
+	public function show($id, $include = '')
     {
-        return $this->client->call("item_categories/{$id}", null, 'GET');
+        return $this->client->call('GET', "item_categories/{$id}", "item_categories", [], [], $this->makeIncludes($include), $id);
     }
 
     /**
@@ -71,11 +65,9 @@ class Category extends Bundle
      * @param  array  $params
      * @return array
      */
-    public function update($id, array $params)
+	public function update($id, $attributes, $relationships = [], $include = '')
     {
-        return $this->client->call("item_categories/{$id}", [
-            'item_category' => $params
-        ], 'PUT');
+        return $this->client->call('PUT', "item_categories/{$id}", "item_categories", $attributes, $relationships, $this->makeIncludes($include), $id );
     }
 
     /**
@@ -84,8 +76,8 @@ class Category extends Bundle
      * @param  int    $id
      * @return array
      */
-    public function delete($id)
+	public function delete($id)
     {
-        return $this->client->call("item_categories/{$id}", null, 'DELETE');
+        return $this->client->call('DELETE', "item_categories/{$id}");
     }
 }
