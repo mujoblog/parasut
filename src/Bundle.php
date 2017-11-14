@@ -50,7 +50,7 @@ abstract class Bundle
 		return $includes;
 	}
 	
-	public function makeListQueryStringArray( $page = 1, $limit = 25, $sort = '', $filterName = '', $filterCode = '' )
+	public function makeListQueryStringArray( $page = 1, $limit = 25, $sort = '', $filters = [] )
 	{
 		$qsData = [
 			'page'	=> [
@@ -61,17 +61,15 @@ abstract class Bundle
 		
 		if( strlen($sort) > 0 )
 			$qsData["sort"] = $sort;
-		
-		if( strlen($filterName) > 0 || strlen($filterCode) > 0 ) {
-			$qsData["filter"] = [];
-			
-			if( strlen($filterName) > 0 )
-				$qsData["filter"]["name"] = $filterName;
-			
-			if( strlen($filterCode) > 0 )
-				$qsData["filter"]["code"] = $filterCode;
-		}
-		
+
+		if( is_array($filters) && count($filters) > 0 ) {
+            $qsData["filter"] = [];
+
+		    foreach( $filters as $filterKey => $filter ) {
+                $qsData["filter"][$filterKey] = $filter;
+            }
+        }
+
 		return $qsData;
 	}
 }
