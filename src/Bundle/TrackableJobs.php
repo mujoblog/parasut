@@ -21,28 +21,18 @@ use Parasut\Bundle;
  * @license   MIT License
  * @copyright 2015
  */
-class EArchive extends Bundle
+class TrackableJobs extends Bundle
 {
-    /**
-     * Create a new E-Archives .
-     *
-     * @param  array  $params
-     * @return array
-     */
-	public function create($attributes, $relationships = [], $include = '')
-	{
-		return $this->client->call('POST', 'e_archives', 'e_archives', $attributes, $relationships, $this->makeIncludes($include));
-	}
 
     /**
-     * Retrieve a E-Archives informations via its own id.
+     * Retrieve a Trackable Jobs informations via its own id.
      *
      * @param  int   $id
      * @return array
      */
     public function show($id, $include = '')
     {
-        return $this->client->call('GET', "e_archives/{$id}/pdf", "e_archives", [], [], $this->makeIncludes($include), $id);
+        return $this->client->call('GET', "trackable_jobs/{$id}", "trackable_jobs", [], [], $this->makeIncludes($include), $id);
     }
 
 }
